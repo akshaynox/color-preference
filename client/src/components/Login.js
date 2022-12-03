@@ -11,10 +11,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-
+    const navigate = useNavigate();
     const [values, setValues] = useState({
         email: "",
         pass: "",
@@ -30,6 +30,7 @@ const Login = () => {
             })
             .then((res) => {
                 localStorage.setItem("token", res.data.token);
+                navigate("/dashboard");
             })
             .catch((err) => console.error(err));
     };
@@ -61,7 +62,9 @@ const Login = () => {
                                         placeholder="Email Address"
                                         variant="outlined"
                                         required
-                                        onChange={(e) => setValues({ ...values, email: e.target.value })}
+                                        onChange={(e) =>
+                                            setValues({ ...values, email: e.target.value })
+                                        }
                                     />
                                 </Grid>
 
@@ -73,7 +76,9 @@ const Login = () => {
                                         placeholder="Password"
                                         variant="outlined"
                                         required
-                                        onChange={(e) => setValues({ ...values, pass: e.target.value })}
+                                        onChange={(e) =>
+                                            setValues({ ...values, pass: e.target.value })
+                                        }
                                         InputProps={{
                                             endAdornment: (
                                                 <InputAdornment position="end">
@@ -82,7 +87,11 @@ const Login = () => {
                                                         aria-label="toggle password"
                                                         edge="end"
                                                     >
-                                                        {values.showPass ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                                        {values.showPass ? (
+                                                            <VisibilityOffIcon />
+                                                        ) : (
+                                                            <VisibilityIcon />
+                                                        )}
                                                     </IconButton>
                                                 </InputAdornment>
                                             ),
