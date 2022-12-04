@@ -13,10 +13,15 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const BASE_URI =
+    process.env.NODE_ENV !== 'production'
+        ? 'http://localhost:8080'
+        : 'https://color-preference.up.railway.app';
+
 const Login = () => {
     const navigate = useNavigate();
     const [values, setValues] = useState({
-        email: "",
+        username: "",
         pass: "",
         showPass: false,
     });
@@ -24,13 +29,21 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         axios
-            .post("https://reqres.in/api/login", {
-                email: values.email,
+            .post(`${BASE_URI}/api/login`, {
+                username: values.username,
                 password: values.pass,
+            }, {
+                headers: {
+                    "Access-Control-Allow-Origin": BASE_URI,
+                }
             })
             .then((res) => {
-                localStorage.setItem("token", res.data.token);
-                navigate("/dashboard");
+                console.log(res.data.loginAllowed);
+                if (res.data.loginAllowed) {
+                    localStorage.setItem("user", values.username);
+                    navigate("/dashboard");
+                } else alert("Wrong Credentials");
+
             })
             .catch((err) => console.error(err));
     };
@@ -56,14 +69,14 @@ const Login = () => {
                             <Grid container direction="column" spacing={2}>
                                 <Grid item>
                                     <TextField
-                                        type="email"
+                                        type="text"
                                         fullWidth
-                                        label="Enter your email"
-                                        placeholder="Email Address"
+                                        label="Enter your username"
+                                        placeholder="Username"
                                         variant="outlined"
                                         required
                                         onChange={(e) =>
-                                            setValues({ ...values, email: e.target.value })
+                                            setValues({ ...values, username: e.target.value })
                                         }
                                     />
                                 </Grid>
