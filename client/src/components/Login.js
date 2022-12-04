@@ -18,6 +18,10 @@ const BASE_URI =
         ? 'http://localhost:8080'
         : 'https://color-preference.up.railway.app';
 
+const headers = {
+    "Access-Control-Allow-Origin": BASE_URI
+};
+
 const Login = () => {
     const navigate = useNavigate();
     const [values, setValues] = useState({
@@ -26,26 +30,25 @@ const Login = () => {
         showPass: false,
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        axios
-            .post(`${BASE_URI}/api/login`, {
-                username: values.username,
-                password: values.pass,
-            }, {
-                headers: {
-                    "Access-Control-Allow-Origin": BASE_URI,
-                }
-            })
-            .then((res) => {
-                console.log(res.data.loginAllowed);
-                if (res.data.loginAllowed) {
-                    localStorage.setItem("user", values.username);
-                    navigate("/dashboard");
-                } else alert("Wrong Credentials");
-
-            })
-            .catch((err) => console.error(err));
+        try {
+            const loginResponse = await axios
+                .post(`${BASE_URI}/api/login`, {
+                    username: values.username,
+                    password: values.pass,
+                }, { headers });
+            if (loginResponse.data.loginAllowed) {
+                localStorage.setItem("user", values.username);
+                const colorPreferenceResponse = await axios.get(
+                    `${BASE_URI}/api/get-preference/${values.username}`
+                    , { headers });
+                if (colorPreferenceResponse.data.colorPreference)
+                    localStorage.setItem("colorPreference", colorPreferenceResponse.data.colorPreference);
+                navigate("/dashboard");
+            } else alert("Wrong Credentials");
+        }
+        catch (err) { console.error(err); }
     };
     const handlePassVisibilty = () => {
         setValues({
