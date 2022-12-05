@@ -34,7 +34,7 @@ const Login = () => {
         if (localStorage.getItem('user')) {
             navigate("/dashboard");
         }
-    }, [])
+    }, [navigate])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
