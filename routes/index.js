@@ -2,14 +2,6 @@ const router = require('express').Router();
 const User = require('../models/user');
 const UserPreference = require('../models/userPreference');
 
-
-router.post('/check', async (req, res) => {
-    console.log(req.body);
-
-    const users = await User.find({ username: req.body.username });
-    res.send(users);
-})
-
 router.post('/login', async (req, res) => {
     try {
         const users = await User.find({ username: req.body.username, password: req.body.password });
