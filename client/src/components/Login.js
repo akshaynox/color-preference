@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -29,6 +29,12 @@ const Login = () => {
         pass: "",
         showPass: false,
     });
+
+    useEffect(() => {
+        if (localStorage.getItem('user')) {
+            navigate("/dashboard");
+        }
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
